@@ -90,9 +90,10 @@ class App extends _react.Component {
       hasRC: false,
       rules: {},
       parser: '',
-      view: 'config',
+      view: 'rules',
       parserOptions: _config2.default.parserOptions,
-      plugins: []
+      plugins: [],
+      availableRules: []
     }, _temp;
   }
 
@@ -137,7 +138,53 @@ class App extends _react.Component {
       var _ref$plugins = _ref.plugins;
       const plugins = _ref$plugins === undefined ? [] : _ref$plugins;
 
-      _this.setState({ parser, parserOptions, rules, plugins });
+      _this.setState({ parser, parserOptions, rules, plugins }, _asyncToGenerator(function* () {
+        const pathToRules = _path2.default.join(directory, 'node_modules', 'eslint', 'lib', 'rules');
+        (0, _fs.readdir)(pathToRules, function (error, files) {
+          if (error) {
+            console.log(error.stack);
+          } else {
+            const availableRules = files.filter(function (file) {
+              return !/^\./.test(file);
+            });
+
+            _Queue2.default.push(...availableRules.map(function (rule) {
+              return function () {
+                return new Promise((() => {
+                  var _ref3 = _asyncToGenerator(function* (resolve, reject) {
+                    try {
+                      const ruleDef = require(_path2.default.join(pathToRules, rule));
+                      _this.setState({
+                        availableRules: _this.state.availableRules.map(function (availableRule) {
+                          return _extends({}, availableRule, {
+                            description: availableRule.name === rule.replace(/\.js$/, '') ? ruleDef.meta.docs.description : availableRule.description
+                          });
+                        })
+                      }, resolve);
+                    } catch (error) {
+                      console.log(error.stack);
+                      reject(error);
+                    }
+                  });
+
+                  return function (_x, _x2) {
+                    return _ref3.apply(this, arguments);
+                  };
+                })());
+              };
+            }));
+
+            _this.setState({
+              availableRules: _lodash2.default.uniqBy([..._this.state.availableRules, ...availableRules.map(function (file) {
+                return {
+                  name: file.replace(/\.js$/, ''),
+                  description: 'Fetching description in local libs'
+                };
+              })], 'name')
+            });
+          }
+        });
+      }));
     })();
   }
 
@@ -174,16 +221,24 @@ class App extends _react.Component {
     return _react2.default.createElement(
       _reactorsGrid.Stack,
       { style: styles.container },
-      _react2.default.createElement(_TopBar2.default, {
-        app: this.state
-      }),
-      _react2.default.createElement(_Directory2.default, {
-        directory: directory,
-        updateDirectory: directory => this.setState({ directory })
-      }),
       _react2.default.createElement(
         _reactors.View,
-        { style: { flexGrow: 2 } },
+        { style: { flexShrink: 1 } },
+        _react2.default.createElement(_TopBar2.default, {
+          app: this.state
+        })
+      ),
+      _react2.default.createElement(
+        _reactors.View,
+        { style: { flexShrink: 1 } },
+        _react2.default.createElement(_Directory2.default, {
+          directory: directory,
+          updateDirectory: directory => this.setState({ directory })
+        })
+      ),
+      _react2.default.createElement(
+        _reactors.View,
+        { style: styles.main },
         directory && !hasRC && _react2.default.createElement(
           _reactors.View,
           null,
@@ -201,10 +256,14 @@ class App extends _react.Component {
           config: _react2.default.createElement(_Parser2.default, { app: this.state })
         })
       ),
-      _react2.default.createElement(_BottomNav2.default, {
-        app: this.state,
-        switchView: view => this.setState({ view })
-      })
+      _react2.default.createElement(
+        _reactors.View,
+        null,
+        _react2.default.createElement(_BottomNav2.default, {
+          app: this.state,
+          switchView: view => this.setState({ view })
+        })
+      )
     );
   }
 }
@@ -215,5 +274,9 @@ const styles = _reactors.StyleSheet.create({
     height: _reactors.Dimensions.get('window').height,
     display: 'flex',
     flexDirection: 'column'
+  },
+  main: {
+    flexGrow: 2,
+    overflow: 'auto'
   }
 });

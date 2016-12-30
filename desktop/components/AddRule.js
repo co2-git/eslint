@@ -30,7 +30,7 @@ class AddRule extends _react.Component {
   constructor(...args) {
     var _temp;
 
-    return _temp = super(...args), this.state = { value: '' }, _temp;
+    return _temp = super(...args), this.state = { level: 0, value: '' }, _temp;
   }
 
   render() {
@@ -47,17 +47,24 @@ class AddRule extends _react.Component {
         value: this.state.value,
         onChange: value => this.setState({ value })
       }),
+      _react2.default.createElement(_reactorsForm.Dropdown, {
+        data: [{ key: 0, label: 'Ignore' }, { key: 1, label: 'Warning' }, { key: 2, label: 'Error' }],
+        selected: this.state.level,
+        onChange: level => this.setState({ level })
+      }),
       _react2.default.createElement(
         _reactorsForm.Button,
         {
           onPress: () => {
             _Queue2.default.push(() => (0, _updateRC2.default)(this.props.directory, rc => {
-              const value = this.state.value;
+              var _state = this.state;
+              const level = _state.level;
+              const value = _state.value;
 
-              if (!Array.isArray(rc.plugins)) {
-                rc.plugins = [];
+              if (!rc.rules) {
+                rc.rules = {};
               }
-              rc.plugins.push(value);
+              rc.rules[value] = level;
               this.setState({ value: '' });
             }));
           }

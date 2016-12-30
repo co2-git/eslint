@@ -17,30 +17,32 @@ var _lodash = require('lodash');
 
 var _lodash2 = _interopRequireDefault(_lodash);
 
-var _AddRule = require('./AddRule');
-
-var _AddRule2 = _interopRequireDefault(_AddRule);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Rules(props) {
   return _react2.default.createElement(
     _reactorsGrid.Stack,
     { style: { margin: 10 } },
-    _react2.default.createElement(
-      _reactors.Text,
-      { style: { fontSize: 24, marginBottom: 10 } },
-      _lodash2.default.keys(props.app.rules).length,
-      ' Rule(s)'
-    ),
-    _react2.default.createElement(_AddRule2.default, { directory: props.app.directory }),
-    props.app.plugins.map(plugin => _react2.default.createElement(
+    props.app.availableRules.map(availableRule => _react2.default.createElement(
       _reactorsGrid.Row,
-      { key: plugin },
+      { key: availableRule.name, style: {
+          margin: 2,
+          padding: 10,
+          borderBottom: '1px solid #ccc'
+        } },
       _react2.default.createElement(
-        _reactors.Text,
+        _reactorsGrid.Stack,
         null,
-        plugin
+        _react2.default.createElement(
+          _reactors.Text,
+          { style: { fontWeight: 'bold' } },
+          availableRule.name
+        ),
+        _react2.default.createElement(
+          _reactors.Text,
+          { style: { color: '#999' } },
+          availableRule.description
+        )
       )
     ))
   );

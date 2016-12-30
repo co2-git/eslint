@@ -12,7 +12,7 @@ import Icon from 'reactors-icons';
 import {Row, Stack} from 'reactors-grid';
 import {Button, TextInput} from 'reactors-form';
 import {remote} from 'electron';
-import {createWriteStream, stat, watch} from 'fs';
+import {createWriteStream, readdir, stat, watch} from 'fs';
 import path from 'path';
 import _ from 'lodash';
 
@@ -43,9 +43,10 @@ export default class App extends Component {
     hasRC: false,
     rules: {},
     parser: '',
-    view: 'config',
+    view: 'rules',
     parserOptions: config.parserOptions,
     plugins: [],
+    availableRules: [],
   };
 
   componentWillUpdate(nextProps, nextState) {
@@ -78,7 +79,55 @@ export default class App extends Component {
 
   async readRC(directory) {
     const {parser, parserOptions, rules, plugins = []} = await readRC(directory);
-    this.setState({parser, parserOptions, rules, plugins});
+    this.setState({parser, parserOptions, rules, plugins}, async () => {
+      const pathToRules = path.join(
+        directory,
+        'node_modules',
+        'eslint',
+        'lib',
+        'rules',
+      );
+      readdir(pathToRules, (error, files) => {
+        if (error) {
+          console.log(error.stack);
+        } else {
+          const availableRules = files.filter((file) => !/^\./.test(file));
+
+          Queue.push(
+            ...availableRules.map((rule) => () =>
+              new Promise(async (resolve, reject) => {
+                try {
+                  const ruleDef = require(path.join(pathToRules, rule));
+                  this.setState({
+                    availableRules: this.state.availableRules.map(
+                      (availableRule) => ({
+                        ...availableRule,
+                        description:
+                          availableRule.name === rule.replace(/\.js$/, '')
+                          ? ruleDef.meta.docs.description
+                          : availableRule.description,
+                      }),
+                    ),
+                  }, resolve);
+                } catch (error) {
+                  console.log(error.stack);
+                  reject(error);
+                }
+              })),
+          );
+
+          this.setState({
+            availableRules: _.uniqBy([
+              ...this.state.availableRules,
+              ...availableRules.map((file) => ({
+                  name: file.replace(/\.js$/, ''),
+                  description: 'Fetching description in local libs',
+                })),
+            ], 'name'),
+          });
+        }
+      });
+    });
   }
 
   init() {
@@ -110,16 +159,20 @@ export default class App extends Component {
 
     return (
       <Stack style={styles.container}>
-        <TopBar
-          app={this.state}
-          />
+        <View style={{flexShrink: 1}}>
+          <TopBar
+            app={this.state}
+            />
+        </View>
 
-        <Directory
-          directory={directory}
-          updateDirectory={(directory) => this.setState({directory})}
-          />
+        <View style={{flexShrink: 1}}>
+          <Directory
+            directory={directory}
+            updateDirectory={(directory) => this.setState({directory})}
+            />
+        </View>
 
-        <View style={{flexGrow: 2}}>
+        <View style={styles.main}>
           {directory && !hasRC && (
             <View>
               <Button onPress={() => this.init()}>
@@ -145,10 +198,12 @@ export default class App extends Component {
           )}
         </View>
 
-        <BottomNav
-          app={this.state}
-          switchView={(view) => this.setState({view})}
-          />
+        <View>
+          <BottomNav
+            app={this.state}
+            switchView={(view) => this.setState({view})}
+            />
+        </View>
       </Stack>
     );
   }
@@ -159,5 +214,9 @@ const styles = StyleSheet.create({
     height: Dimensions.get('window').height,
     display: 'flex',
     flexDirection: 'column',
-  }
+  },
+  main: {
+    flexGrow: 2,
+    overflow: 'auto',
+  },
 });
