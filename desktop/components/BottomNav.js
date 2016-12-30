@@ -38,7 +38,7 @@ function BottomNav(props) {
     { style: styles.container },
     _react2.default.createElement(
       _reactorsGrid.Stack,
-      { style: styles.tab },
+      { style: styles.tab, onClick: () => props.switchView('rules') },
       _react2.default.createElement(_reactorsIcons2.default, { name: 'sliders', style: styles.icon }),
       _react2.default.createElement(
         _reactors.Text,

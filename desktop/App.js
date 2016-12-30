@@ -56,6 +56,10 @@ var _Plugins = require('./components/Plugins');
 
 var _Plugins2 = _interopRequireDefault(_Plugins);
 
+var _Rules = require('./components/Rules');
+
+var _Rules2 = _interopRequireDefault(_Rules);
+
 var _switch2 = require('./tools/_switch');
 
 var _switch3 = _interopRequireDefault(_switch2);
@@ -190,17 +194,7 @@ class App extends _react.Component {
           )
         ),
         directory && hasRC && (0, _switch3.default)(view, {
-          rules: _react2.default.createElement(
-            _reactorsGrid.Row,
-            null,
-            _react2.default.createElement(
-              _reactors.Text,
-              null,
-              'Rules (',
-              _lodash2.default.keys(rules).length,
-              ')'
-            )
-          ),
+          rules: _react2.default.createElement(_Rules2.default, { app: this.state }),
 
           plugins: _react2.default.createElement(_Plugins2.default, { app: this.state }),
 

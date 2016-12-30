@@ -23,6 +23,7 @@ import Directory from './components/Directory';
 import BottomNav from './components/BottomNav';
 import Parser from './components/Parser';
 import Plugins from './components/Plugins';
+import Rules from './components/Rules';
 
 import _switch from './tools/_switch';
 import Queue from './tools/Queue';
@@ -130,9 +131,7 @@ export default class App extends Component {
           {directory && hasRC && (
             _switch(view, {
               rules: (
-                <Row>
-                  <Text>Rules ({_.keys(rules).length})</Text>
-                </Row>
+                <Rules app={this.state} />
               ),
 
               plugins: (

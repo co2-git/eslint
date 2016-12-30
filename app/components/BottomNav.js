@@ -12,7 +12,7 @@ export default function BottomNav(props: $props) {
 
   return (
     <Row style={styles.container}>
-      <Stack style={styles.tab}>
+      <Stack style={styles.tab} onClick={() => props.switchView('rules')}>
         <Icon name="sliders" style={styles.icon} />
         <Text style={styles.label}>
           {_.keys(rules).length} Rules
