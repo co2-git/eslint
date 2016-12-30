@@ -1,0 +1,36 @@
+{
+  "name": "ESLint",
+  "version": "0.0.6",
+  "private": true,
+  "scripts": {
+    "start": "node node_modules/react-native/local-cli/cli.js start",
+    "test": "jest",
+    "babelDesktop": "babel --no-babelrc --presets=react,electron --out-dir=desktop app",
+    "babelDesktopWatch": "babel --no-babelrc --presets=react,electron --out-dir=desktop app --watch"
+  },
+  "dependencies": {
+    "babel-cli": "^6.18.0",
+    "babel-preset-electron": "^0.37.8",
+    "babel-preset-react": "^6.16.0",
+    "flow-bin": "^0.37.4",
+    "lodash": "^4.17.3",
+    "react": "^15.4.1",
+    "react-dom": "^15.4.1",
+    "react-native": "0.39.2",
+    "reactors": "^1.1.1",
+    "reactors-form": "^0.2.7",
+    "reactors-grid": "^1.4.3",
+    "reactors-icons": "^1.0.1"
+  },
+  "devDependencies": {
+    "babel-jest": "18.0.0",
+    "babel-preset-react-native": "1.9.1",
+    "jest": "18.0.0",
+    "react-test-renderer": "15.4.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "main": "main.js",
+  "license": "MIT"
+}
