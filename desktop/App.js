@@ -118,11 +118,10 @@ class App extends _react.Component {
         this.setState({ hasRC: false });
       } else {
         this.readRC(directory);
+        this.watcher = (0, _fs.watch)(file, (eventType, filename) => {
+          this.readRC(directory);
+        });
       }
-    });
-
-    this.watcher = (0, _fs.watch)(file, (eventType, filename) => {
-      this.readRC(directory);
     });
   }
 

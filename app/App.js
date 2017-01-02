@@ -69,11 +69,10 @@ export default class App extends Component {
         this.setState({hasRC: false});
       } else {
         this.readRC(directory);
+        this.watcher = watch(file, (eventType, filename) => {
+          this.readRC(directory);
+        });
       }
-    });
-
-    this.watcher = watch(file, (eventType, filename) => {
-      this.readRC(directory);
     });
   }
 
