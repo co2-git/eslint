@@ -43,6 +43,9 @@ export default class Parser extends Component {
           ]}
           value={this.props.app.parserOptions.ecmaVersion}
           update={(ecmaVersion) => this.set((rc) => {
+            if (!rc.parserOptions) {
+              rc.parserOptions = {};
+            }
             rc.parserOptions.ecmaVersion = ecmaVersion;
           })}
           />

@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {remote} from 'electron';
 import {
   Dimensions,
   Image,
@@ -11,7 +12,6 @@ import {
 import Icon from 'reactors-icons';
 import {Row, Stack} from 'reactors-grid';
 import {Button, TextInput} from 'reactors-form';
-import {remote} from 'electron';
 import {createWriteStream, readdir, stat, watch} from 'fs';
 import path from 'path';
 import _ from 'lodash';
@@ -35,12 +35,14 @@ const {dialog} = remote;
 Icon.href =
   'node_modules/reactors-icons/assets/font-awesome/css/font-awesome.min.css';
 
+const [, directory] = remote.process.argv;
+
 export default class App extends Component {
   watcher;
 
   state = {
-    directory: '',
-    hasRC: false,
+    directory: this.props.directory || directory || '',
+    hasRC: this.props.directory || directory,
     rules: {},
     parser: '',
     view: 'rules',
@@ -48,6 +50,12 @@ export default class App extends Component {
     plugins: [],
     availableRules: [],
   };
+
+  componentDidMount() {
+    if (this.state.directory) {
+      this.changeDirectory(this.state.directory);
+    }
+  }
 
   componentWillUpdate(nextProps, nextState) {
     if (nextState.directory !== this.state.directory) {

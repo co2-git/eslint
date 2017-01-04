@@ -6,9 +6,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
+var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
+
+var _electron = require('electron');
 
 var _reactors = require('reactors');
 
@@ -19,8 +23,6 @@ var _reactorsIcons2 = _interopRequireDefault(_reactorsIcons);
 var _reactorsGrid = require('reactors-grid');
 
 var _reactorsForm = require('reactors-form');
-
-var _electron = require('electron');
 
 var _fs = require('fs');
 
@@ -81,13 +83,16 @@ const dialog = _electron.remote.dialog;
 
 _reactorsIcons2.default.href = 'node_modules/reactors-icons/assets/font-awesome/css/font-awesome.min.css';
 
+var _remote$process$argv = _slicedToArray(_electron.remote.process.argv, 2);
+
+const directory = _remote$process$argv[1];
 class App extends _react.Component {
   constructor(...args) {
     var _temp;
 
     return _temp = super(...args), this.state = {
-      directory: '',
-      hasRC: false,
+      directory: this.props.directory || directory || '',
+      hasRC: this.props.directory || directory,
       rules: {},
       parser: '',
       view: 'rules',
@@ -95,6 +100,12 @@ class App extends _react.Component {
       plugins: [],
       availableRules: []
     }, _temp;
+  }
+
+  componentDidMount() {
+    if (this.state.directory) {
+      this.changeDirectory(this.state.directory);
+    }
   }
 
   componentWillUpdate(nextProps, nextState) {
