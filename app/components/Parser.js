@@ -16,11 +16,11 @@ export default class Parser extends Component {
   props: $props;
 
   set(fn) {
+    console.log('setting');
     Queue.push(() => updateRC(this.props.app.directory, fn));
   }
 
   render() {
-    console.info(this);
     return (
       <Stack>
         <Entry

@@ -7,26 +7,29 @@ import _ from 'lodash';
 
 type $props = {};
 
-export default function BottomNav(props: $props) {
-  const {plugins, rules} = props.app;
-
+export default function BottomNav({app: {plugins, rules}, switchView}: $props) {
   return (
     <Row style={styles.container}>
-      <Stack style={styles.tab} onClick={() => props.switchView('rules')}>
+      <Stack style={styles.tab} onClick={() => switchView('rules')}>
         <Icon name="sliders" style={styles.icon} />
         <Text style={styles.label}>
           {_.keys(rules).length} Rules
         </Text>
       </Stack>
 
-      <Stack style={styles.tab} onClick={() => props.switchView('plugins')}>
+      <Stack style={styles.tab} onClick={() => switchView('plugins')}>
         <Icon name="puzzle-piece" style={styles.icon} />
         <Text style={styles.label}>
           {plugins.length} Plugins
         </Text>
       </Stack>
 
-      <Stack style={styles.tab} onClick={() => props.switchView('config')}>
+      <Stack
+        style={styles.tab}
+        onPress={() => {
+          switchView('config');
+        }}
+        >
         <Icon name="cog" style={styles.icon} />
         <Text style={styles.label}>Config</Text>
       </Stack>

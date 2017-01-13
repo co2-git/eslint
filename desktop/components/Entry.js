@@ -53,7 +53,7 @@ class Entry extends _react.Component {
       }
       this.throttle = setTimeout(() => {
         this.props.update(currentState.value);
-      }, 2500);
+      }, 500);
     }
   }
 

@@ -39,11 +39,11 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 class Parser extends _react.Component {
 
   set(fn) {
+    console.log('setting');
     _Queue2.default.push(() => (0, _updateRC2.default)(this.props.app.directory, fn));
   }
 
   render() {
-    console.info(this);
     return _react2.default.createElement(
       _reactorsGrid.Stack,
       null,
@@ -60,6 +60,9 @@ class Parser extends _react.Component {
         data: [..._config2.default.ecmaVersions, { label: 'Other', key: '*' }],
         value: this.props.app.parserOptions.ecmaVersion,
         update: ecmaVersion => this.set(rc => {
+          if (!rc.parserOptions) {
+            rc.parserOptions = {};
+          }
           rc.parserOptions.ecmaVersion = ecmaVersion;
         })
       }),

@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import drop from 'lodash/drop';
+import take from 'lodash/take';
 
 export default class Queue {
   static running = false;
@@ -25,10 +26,10 @@ export default class Queue {
           console.log('running queue', this.queue.length, this.limit);
 
           await Promise.all(
-            _.take(this.queue, 5).map((item) => item()),
+            take(this.queue, 5).map((item) => item()),
           );
 
-          this.queue = _.drop(this.queue, 5);
+          this.queue = drop(this.queue, 5);
 
           this.running = false;
 

@@ -3851,9 +3851,17 @@ react@^15.4.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
 
-reactors-form@^0.2.7:
-  version "0.2.7"
-  resolved "https://registry.yarnpkg.com/reactors-form/-/reactors-form-0.2.7.tgz#faa8dba4ea4bb2b0618b7b7735140d326ff0f270"
+reactors-file-dialog@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/reactors-file-dialog/-/reactors-file-dialog-1.1.1.tgz#ea5d0634553dfcefc762972b6050ec7aa8c4d434"
+  dependencies:
+    babel-preset-react "^6.16.0"
+    reactors-grid "^1.5.0"
+    reactors-icons "^1.0.2"
+
+reactors-form@^0.3.4:
+  version "0.3.4"
+  resolved "https://registry.yarnpkg.com/reactors-form/-/reactors-form-0.3.4.tgz#fb37f037a6f6b319f8d5dd81597d79da862d657b"
   dependencies:
     babel-eslint "^6.1.2"
     eslint "^3.4.0"
@@ -3861,20 +3869,24 @@ reactors-form@^0.2.7:
     eslint-plugin-react-native "^2.0.0"
     lodash "^4.13.1"
 
-reactors-grid@^1.4.3:
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/reactors-grid/-/reactors-grid-1.4.3.tgz#158fcfad04a5709e82ff20295db93b851c8c18fc"
+reactors-grid@^1.5.0:
+  version "1.6.0"
+  resolved "https://registry.yarnpkg.com/reactors-grid/-/reactors-grid-1.6.0.tgz#964d8177008ccda5c61e898f66ffb52a9434c44c"
 
-reactors-icons@^1.0.1:
-  version "1.0.1"
-  resolved "https://registry.yarnpkg.com/reactors-icons/-/reactors-icons-1.0.1.tgz#3fabb39fbc4a570ec54206d8279dee0c580f87c5"
+reactors-grid@^1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/reactors-grid/-/reactors-grid-1.6.1.tgz#855f12c135240f795632a4f08174e0af52048334"
+
+reactors-icons@^1.0.2:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/reactors-icons/-/reactors-icons-1.0.2.tgz#cbc5b629bcee20620964d22c1721d223996f5615"
   dependencies:
     bower "^1.7.9"
     lodash "^4.15.0"
 
-reactors@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/reactors/-/reactors-1.1.1.tgz#8048f8f488ff9a30c25d58f9e86d37c7de05a0ca"
+reactors@^1.4.12:
+  version "1.4.12"
+  resolved "https://registry.yarnpkg.com/reactors/-/reactors-1.4.12.tgz#7a3421e1727b7f74c1f69728e9ac9407104de984"
   dependencies:
     electron-notifications "^0.1.4"
     nedb "^1.8.0"

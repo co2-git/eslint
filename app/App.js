@@ -1,54 +1,27 @@
-import React, {Component} from 'react';
-import {remote} from 'electron';
-import {
-  Dimensions,
-  Image,
-  Link,
-  ListView,
-  StyleSheet,
-  Text,
-  View,
-} from 'reactors';
-import Icon from 'reactors-icons';
-import {Row, Stack} from 'reactors-grid';
-import {Button, TextInput} from 'reactors-form';
-import {createWriteStream, readdir, stat, watch} from 'fs';
-import path from 'path';
-import _ from 'lodash';
-
-import readRC from './tools/readRC';
-
-import TopBar from './components/TopBar';
-import Directory from './components/Directory';
-import BottomNav from './components/BottomNav';
-import Parser from './components/Parser';
-import Plugins from './components/Plugins';
-import Rules from './components/Rules';
-
 import _switch from './tools/_switch';
+import {Dimensions, StyleSheet, Text, View} from 'reactors';
+import {Stack} from 'reactors-grid';
+import BottomNav from './components/BottomNav';
+import fetchRules from './actions/fetchRules';
+import FileDialog from 'reactors-file-dialog';
+import path from 'path';
 import Queue from './tools/Queue';
-
-import config from './config';
-
-const {dialog} = remote;
-
-Icon.href =
-  'node_modules/reactors-icons/assets/font-awesome/css/font-awesome.min.css';
-
-const [, directory] = remote.process.argv;
+import React, {Component} from 'react';
+import Rules from './components/Rules';
+import Plugins from './components/Plugins';
+import Parser from './components/Parser';
+import TopBar from './components/TopBar';
+import readRC from './tools/readRC';
+import {stat} from 'fs';
 
 export default class App extends Component {
-  watcher;
-
   state = {
-    directory: this.props.directory || directory || '',
-    hasRC: this.props.directory || directory,
-    rules: {},
-    parser: '',
-    view: 'rules',
-    parserOptions: config.parserOptions,
-    plugins: [],
     availableRules: [],
+    directory: this.props.directory || path.dirname(__dirname),
+    hasRC: true,
+    plugins: [],
+    rules: [],
+    view: 'rules',
   };
 
   componentDidMount() {
@@ -57,18 +30,27 @@ export default class App extends Component {
     }
   }
 
-  componentWillUpdate(nextProps, nextState) {
-    if (nextState.directory !== this.state.directory) {
-      nextState.hasRC = true;
-      const {directory} = nextState;
-      this.changeDirectory(directory);
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.directory !== this.state.directory) {
+      this.changeDirectory(this.state.directory);
     }
   }
 
+  fetchRules(directory) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        this.setState({availableRules: await fetchRules(directory)}, resolve);
+      } catch (error) {
+        console.log(error.stack);
+        reject(error);
+      }
+    });
+  }
+
   changeDirectory(directory) {
-    if (this.watcher) {
-      this.watcher.close();
-    }
+    // if (this.watcher) {
+    //   this.watcher.close();
+    // }
 
     const file = path.join(directory, '.eslintrc.json');
 
@@ -77,119 +59,57 @@ export default class App extends Component {
         this.setState({hasRC: false});
       } else {
         this.readRC(directory);
-        this.watcher = watch(file, (eventType, filename) => {
-          this.readRC(directory);
-        });
+        // this.watcher = watch(file, (eventType, filename) => {
+        //   this.readRC(directory);
+        // });
       }
     });
   }
 
-  async readRC(directory) {
-    const {parser, parserOptions, rules, plugins = []} = await readRC(directory);
-    this.setState({parser, parserOptions, rules, plugins}, async () => {
-      const pathToRules = path.join(
-        directory,
-        'node_modules',
-        'eslint',
-        'lib',
-        'rules',
-      );
-      readdir(pathToRules, (error, files) => {
-        if (error) {
-          console.log(error.stack);
-        } else {
-          const availableRules = files.filter((file) => !/^\./.test(file));
+  readRC(directory) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const {
+          parser,
+          parserOptions,
+          rules,
+          plugins = [],
+        } = await readRC(directory);
 
-          Queue.push(
-            ...availableRules.map((rule) => () =>
-              new Promise(async (resolve, reject) => {
-                try {
-                  const ruleDef = require(path.join(pathToRules, rule));
-                  this.setState({
-                    availableRules: this.state.availableRules.map(
-                      (availableRule) => ({
-                        ...availableRule,
-                        description:
-                          availableRule.name === rule.replace(/\.js$/, '')
-                          ? ruleDef.meta.docs.description
-                          : availableRule.description,
-                      }),
-                    ),
-                  }, resolve);
-                } catch (error) {
-                  console.log(error.stack);
-                  reject(error);
-                }
-              })),
-          );
-
-          this.setState({
-            availableRules: _.uniqBy([
-              ...this.state.availableRules,
-              ...availableRules.map((file) => ({
-                  name: file.replace(/\.js$/, ''),
-                  description: 'Fetching description in local libs',
-                })),
-            ], 'name'),
-          });
-        }
-      });
-    });
-  }
-
-  init() {
-    Queue.push(() => {
-      const {directory} = this.state;
-
-      const initial = {
-        ..._.pick(config, ['parser', 'parserOptions']),
-        plugins: [],
-        rules: {},
-      };
-
-      const write = createWriteStream(path.join(directory, '.eslintrc.json'));
-
-      write
-        .on('error', (error) => console.log(error.stack))
-        .on('finish', () => {
-          this.setState({hasRC: true}, () => this.readRC(directory));
-        });
-
-      write.write(JSON.stringify(initial, null, 2));
-
-      write.end();
+        this.setState(
+          {parser, parserOptions, rules, plugins},
+          () => {
+            this.fetchRules(directory);
+          },
+        );
+      } catch (error) {
+        reject(error);
+      }
     });
   }
 
   render() {
-    const {directory, hasRC, rules, view} = this.state;
-
     return (
       <Stack style={styles.container}>
         <View style={{flexShrink: 1}}>
-          <TopBar
-            app={this.state}
-            />
-        </View>
-
-        <View style={{flexShrink: 1}}>
-          <Directory
-            directory={directory}
-            updateDirectory={(directory) => this.setState({directory})}
-            />
+          <TopBar app={this.state} />
         </View>
 
         <View style={styles.main}>
-          {directory && !hasRC && (
-            <View>
-              <Button onPress={() => this.init()}>
-                Init
-              </Button>
-            </View>
-          )}
-
-          {directory && hasRC && (
-            _switch(view, {
+          {
+            !this.state.availableRules.length &&
+            <Text>Fetching rules</Text>
+          }
+          {
+            this.state.availableRules.length &&
+            <FileDialog
+              directory={this.state.directory}
+              onChange={(directory) => this.setState({directory})}
+              />
+          }
+          {
+            this.state.availableRules.length &&
+            _switch(this.state.view, {
               rules: (
                 <Rules app={this.state} />
               ),
@@ -202,25 +122,28 @@ export default class App extends Component {
                 <Parser app={this.state} />
               ),
             })
-          )}
+          }
         </View>
 
-        <View>
-          <BottomNav
-            app={this.state}
-            switchView={(view) => this.setState({view})}
-            />
-        </View>
+        {
+          this.state.hasRC &&
+          <View style={{flexShrink: 1}}>
+            <BottomNav
+              app={this.state}
+              switchView={(view) => {
+                this.setState({view});
+              }}
+              />
+          </View>
+        }
       </Stack>
     );
   }
 }
 
-const styles = StyleSheet.create({
+const styles = new StyleSheet({
   container: {
     height: Dimensions.get('window').height,
-    display: 'flex',
-    flexDirection: 'column',
   },
   main: {
     flexGrow: 2,

@@ -27,18 +27,13 @@ var _lodash2 = _interopRequireDefault(_lodash);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function BottomNav(props) {
-  var _props$app = props.app;
-  const plugins = _props$app.plugins;
-  const rules = _props$app.rules;
-
-
+function BottomNav({ app: { plugins, rules }, switchView }) {
   return _react2.default.createElement(
     _reactorsGrid.Row,
     { style: styles.container },
     _react2.default.createElement(
       _reactorsGrid.Stack,
-      { style: styles.tab, onClick: () => props.switchView('rules') },
+      { style: styles.tab, onClick: () => switchView('rules') },
       _react2.default.createElement(_reactorsIcons2.default, { name: 'sliders', style: styles.icon }),
       _react2.default.createElement(
         _reactors.Text,
@@ -49,7 +44,7 @@ function BottomNav(props) {
     ),
     _react2.default.createElement(
       _reactorsGrid.Stack,
-      { style: styles.tab, onClick: () => props.switchView('plugins') },
+      { style: styles.tab, onClick: () => switchView('plugins') },
       _react2.default.createElement(_reactorsIcons2.default, { name: 'puzzle-piece', style: styles.icon }),
       _react2.default.createElement(
         _reactors.Text,
@@ -60,7 +55,12 @@ function BottomNav(props) {
     ),
     _react2.default.createElement(
       _reactorsGrid.Stack,
-      { style: styles.tab, onClick: () => props.switchView('config') },
+      {
+        style: styles.tab,
+        onPress: () => {
+          switchView('config');
+        }
+      },
       _react2.default.createElement(_reactorsIcons2.default, { name: 'cog', style: styles.icon }),
       _react2.default.createElement(
         _reactors.Text,

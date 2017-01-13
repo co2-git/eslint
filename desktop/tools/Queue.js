@@ -4,9 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _lodash = require('lodash');
+var _drop = require('lodash/drop');
 
-var _lodash2 = _interopRequireDefault(_lodash);
+var _drop2 = _interopRequireDefault(_drop);
+
+var _take = require('lodash/take');
+
+var _take2 = _interopRequireDefault(_take);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -32,11 +36,11 @@ class Queue {
 
             console.log('running queue', _this.queue.length, _this.limit);
 
-            yield Promise.all(_lodash2.default.take(_this.queue, 5).map(function (item) {
+            yield Promise.all((0, _take2.default)(_this.queue, 5).map(function (item) {
               return item();
             }));
 
-            _this.queue = _lodash2.default.drop(_this.queue, 5);
+            _this.queue = (0, _drop2.default)(_this.queue, 5);
 
             _this.running = false;
 

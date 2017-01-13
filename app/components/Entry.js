@@ -32,7 +32,7 @@ export default class Entry extends Component {
       }
       this.throttle = setTimeout(() => {
         this.props.update(currentState.value);
-      }, 2500);
+      }, 500);
     }
   }
 

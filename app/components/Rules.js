@@ -6,6 +6,7 @@ import _ from 'lodash';
 type $props = {};
 
 export default function Rules(props: $props) {
+  console.info(props.app.availableRules);
   return (
     <Stack style={{margin: 10}}>
       {

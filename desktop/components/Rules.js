@@ -20,6 +20,7 @@ var _lodash2 = _interopRequireDefault(_lodash);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function Rules(props) {
+  console.info(props.app.availableRules);
   return _react2.default.createElement(
     _reactorsGrid.Stack,
     { style: { margin: 10 } },
