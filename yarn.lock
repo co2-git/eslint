@@ -1763,9 +1763,9 @@ eslint@3.12.0:
     text-table "~0.2.0"
     user-home "^2.0.0"
 
-eslint@^3.4.0:
-  version "3.12.2"
-  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.12.2.tgz#6be5a9aa29658252abd7f91e9132bab1f26f3c34"
+eslint@^3.13.1, eslint@^3.4.0:
+  version "3.13.1"
+  resolved "https://registry.yarnpkg.com/eslint/-/eslint-3.13.1.tgz#564d2646b5efded85df96985332edd91a23bff25"
   dependencies:
     babel-code-frame "^6.16.0"
     chalk "^1.1.3"
@@ -1797,7 +1797,7 @@ eslint@^3.4.0:
     require-uncached "^1.0.2"
     shelljs "^0.7.5"
     strip-bom "^3.0.0"
-    strip-json-comments "~1.0.1"
+    strip-json-comments "~2.0.1"
     table "^3.7.8"
     text-table "~0.2.0"
     user-home "^2.0.0"
@@ -3869,11 +3869,7 @@ reactors-form@^0.3.4:
     eslint-plugin-react-native "^2.0.0"
     lodash "^4.13.1"
 
-reactors-grid@^1.5.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/reactors-grid/-/reactors-grid-1.6.0.tgz#964d8177008ccda5c61e898f66ffb52a9434c44c"
-
-reactors-grid@^1.6.1:
+reactors-grid@^1.5.0, reactors-grid@^1.6.1:
   version "1.6.1"
   resolved "https://registry.yarnpkg.com/reactors-grid/-/reactors-grid-1.6.1.tgz#855f12c135240f795632a4f08174e0af52048334"
 
@@ -4411,6 +4407,10 @@ strip-json-comments@~1.0.1, strip-json-comments@~1.0.4:
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-1.0.4.tgz#1e15fbcac97d3ee99bf2d73b4c656b082bbafb91"
 
+strip-json-comments@~2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/strip-json-comments/-/strip-json-comments-2.0.1.tgz#3c531942e908c2697c0ec344858c286c7ca0a60a"
+
 supports-color@^0.2.0:
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/supports-color/-/supports-color-0.2.0.tgz#d92de2694eb3f67323973d7ae3d8b55b4c22190a"
@@ -4602,6 +4602,10 @@ uid-safe@~2.0.0:
 ultron@1.0.x:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/ultron/-/ultron-1.0.2.tgz#ace116ab557cd197386a4e88f4685378c8b2e4fa"
+
+underscore-switch@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/underscore-switch/-/underscore-switch-1.0.0.tgz#a9e618da3a02b49eb6a75f64ef6ff08fd9548eb2"
 
 underscore@~1.4.4:
   version "1.4.4"

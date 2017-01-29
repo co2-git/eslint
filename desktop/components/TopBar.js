@@ -17,6 +17,10 @@ var _reactorsIcons2 = _interopRequireDefault(_reactorsIcons);
 
 var _reactorsGrid = require('reactors-grid');
 
+var _reactorsFileDialog = require('reactors-file-dialog');
+
+var _reactorsFileDialog2 = _interopRequireDefault(_reactorsFileDialog);
+
 var _package = require('../../package.json');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -38,7 +42,12 @@ function TopBar(props) {
         { style: styles.title },
         'v',
         _package.version
-      )
+      ),
+      props.app.availableRules.length && _react2.default.createElement(_reactorsFileDialog2.default, {
+        color: 'white',
+        directory: props.app.directory,
+        onChange: directory => props.setAppState({ directory })
+      })
     )
   );
 }

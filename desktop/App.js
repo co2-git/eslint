@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
-var _switch2 = require('./tools/_switch');
+var _underscoreSwitch = require('underscore-switch');
 
-var _switch3 = _interopRequireDefault(_switch2);
+var _underscoreSwitch2 = _interopRequireDefault(_underscoreSwitch);
 
 var _reactors = require('reactors');
 
@@ -19,10 +19,6 @@ var _BottomNav2 = _interopRequireDefault(_BottomNav);
 var _fetchRules = require('./actions/fetchRules');
 
 var _fetchRules2 = _interopRequireDefault(_fetchRules);
-
-var _reactorsFileDialog = require('reactors-file-dialog');
-
-var _reactorsFileDialog2 = _interopRequireDefault(_reactorsFileDialog);
 
 var _path = require('path');
 
@@ -162,7 +158,10 @@ class App extends _react.Component {
       _react2.default.createElement(
         _reactors.View,
         { style: { flexShrink: 1 } },
-        _react2.default.createElement(_TopBar2.default, { app: this.state })
+        _react2.default.createElement(_TopBar2.default, {
+          app: this.state,
+          setAppState: partial => this.setState(partial)
+        })
       ),
       _react2.default.createElement(
         _reactors.View,
@@ -172,12 +171,11 @@ class App extends _react.Component {
           null,
           'Fetching rules'
         ),
-        this.state.availableRules.length && _react2.default.createElement(_reactorsFileDialog2.default, {
-          directory: this.state.directory,
-          onChange: directory => this.setState({ directory })
-        }),
-        this.state.availableRules.length && (0, _switch3.default)(this.state.view, {
-          rules: _react2.default.createElement(_Rules2.default, { app: this.state }),
+        this.state.availableRules.length && (0, _underscoreSwitch2.default)(this.state.view, {
+          rules: _react2.default.createElement(_Rules2.default, {
+            app: this.state,
+            setAppState: partial => this.setState(partial)
+          }),
 
           plugins: _react2.default.createElement(_Plugins2.default, { app: this.state }),
 

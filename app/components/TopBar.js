@@ -6,6 +6,7 @@ import {
 } from 'reactors';
 import Icon from 'reactors-icons';
 import {Row} from 'reactors-grid';
+import FileDialog from 'reactors-file-dialog';
 import {version} from '../../package.json';
 
 type $props = {};
@@ -16,6 +17,14 @@ export default function TopBar(props: $props) {
       <Row style={{justifyContent: 'flex-start'}}>
         <Text style={[styles.title, {fontWeight: 'bold', paddingRight: 5}]}>eslint</Text>
         <Text style={styles.title}>v{version}</Text>
+        {
+          props.app.availableRules.length &&
+          <FileDialog
+            color="white"
+            directory={props.app.directory}
+            onChange={(directory) => props.setAppState({directory})}
+            />
+        }
       </Row>
     </Row>
   );

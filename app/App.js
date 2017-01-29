@@ -1,9 +1,8 @@
-import _switch from './tools/_switch';
+import _switch from 'underscore-switch';
 import {Dimensions, StyleSheet, Text, View} from 'reactors';
 import {Stack} from 'reactors-grid';
 import BottomNav from './components/BottomNav';
 import fetchRules from './actions/fetchRules';
-import FileDialog from 'reactors-file-dialog';
 import path from 'path';
 import Queue from './tools/Queue';
 import React, {Component} from 'react';
@@ -92,7 +91,10 @@ export default class App extends Component {
     return (
       <Stack style={styles.container}>
         <View style={{flexShrink: 1}}>
-          <TopBar app={this.state} />
+          <TopBar
+            app={this.state}
+            setAppState={(partial) => this.setState(partial)}
+            />
         </View>
 
         <View style={styles.main}>
@@ -102,16 +104,12 @@ export default class App extends Component {
           }
           {
             this.state.availableRules.length &&
-            <FileDialog
-              directory={this.state.directory}
-              onChange={(directory) => this.setState({directory})}
-              />
-          }
-          {
-            this.state.availableRules.length &&
             _switch(this.state.view, {
               rules: (
-                <Rules app={this.state} />
+                <Rules
+                  app={this.state}
+                  setAppState={(partial) => this.setState(partial)}
+                  />
               ),
 
               plugins: (

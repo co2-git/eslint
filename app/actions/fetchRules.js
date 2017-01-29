@@ -23,7 +23,7 @@ export default function fetchRules(directory) {
             const ruleDef = require(path.join(pathToRules, rule));
             resolve({
               ...ruleDef,
-              name: rule,
+              name: rule.replace(/\.js$/, ''),
               description: ruleDef.meta.docs.description,
             });
           } catch (error) {

@@ -12,6 +12,7 @@
     "babel-cli": "^6.18.0",
     "babel-preset-electron": "^0.37.8",
     "babel-preset-react": "^6.16.0",
+    "eslint": "^3.13.1",
     "flow-bin": "^0.37.4",
     "lodash": "^4.17.3",
     "react": "^15.4.1",
@@ -21,7 +22,8 @@
     "reactors-file-dialog": "^1.1.1",
     "reactors-form": "^0.3.4",
     "reactors-grid": "^1.6.1",
-    "reactors-icons": "^1.0.2"
+    "reactors-icons": "^1.0.2",
+    "underscore-switch": "^1.0.0"
   },
   "devDependencies": {
     "babel-jest": "18.0.0",
