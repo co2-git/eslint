@@ -4,6 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _underscoreSwitch = require('underscore-switch');
 
 var _underscoreSwitch2 = _interopRequireDefault(_underscoreSwitch);
@@ -11,6 +13,8 @@ var _underscoreSwitch2 = _interopRequireDefault(_underscoreSwitch);
 var _reactors = require('reactors');
 
 var _reactorsGrid = require('reactors-grid');
+
+var _fs = require('fs');
 
 var _BottomNav = require('./components/BottomNav');
 
@@ -20,9 +24,17 @@ var _fetchRules = require('./actions/fetchRules');
 
 var _fetchRules2 = _interopRequireDefault(_fetchRules);
 
+var _Parser = require('./components/Parser');
+
+var _Parser2 = _interopRequireDefault(_Parser);
+
 var _path = require('path');
 
 var _path2 = _interopRequireDefault(_path);
+
+var _Plugins = require('./components/Plugins');
+
+var _Plugins2 = _interopRequireDefault(_Plugins);
 
 var _Queue = require('./tools/Queue');
 
@@ -32,27 +44,25 @@ var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
 
+var _readRC = require('./tools/readRC');
+
+var _readRC2 = _interopRequireDefault(_readRC);
+
 var _Rules = require('./components/Rules');
 
 var _Rules2 = _interopRequireDefault(_Rules);
-
-var _Plugins = require('./components/Plugins');
-
-var _Plugins2 = _interopRequireDefault(_Plugins);
-
-var _Parser = require('./components/Parser');
-
-var _Parser2 = _interopRequireDefault(_Parser);
 
 var _TopBar = require('./components/TopBar');
 
 var _TopBar2 = _interopRequireDefault(_TopBar);
 
-var _readRC = require('./tools/readRC');
+var _updateRC = require('./tools/updateRC');
 
-var _readRC2 = _interopRequireDefault(_readRC);
+var _updateRC2 = _interopRequireDefault(_updateRC);
 
-var _fs = require('fs');
+var _omit = require('lodash/omit');
+
+var _omit2 = _interopRequireDefault(_omit);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -104,10 +114,6 @@ class App extends _react.Component {
   }
 
   changeDirectory(directory) {
-    // if (this.watcher) {
-    //   this.watcher.close();
-    // }
-
     const file = _path2.default.join(directory, '.eslintrc.json');
 
     (0, _fs.stat)(file, error => {
@@ -115,9 +121,6 @@ class App extends _react.Component {
         this.setState({ hasRC: false });
       } else {
         this.readRC(directory);
-        // this.watcher = watch(file, (eventType, filename) => {
-        //   this.readRC(directory);
-        // });
       }
     });
   }
@@ -151,6 +154,73 @@ class App extends _react.Component {
     })());
   }
 
+  addRule(rule) {
+    var _this3 = this;
+
+    return new Promise((() => {
+      var _ref4 = _asyncToGenerator(function* (resolve, reject) {
+        try {
+          yield (0, _updateRC2.default)(_this3.state.directory, function (rc) {
+            rc.rules[rule.name] = 0;
+          });
+          _this3.setState({ rules: _extends({}, _this3.state.rules, {
+              [rule.name]: 0
+            }) }, resolve);
+        } catch (error) {
+          reject(error);
+        }
+      });
+
+      return function (_x5, _x6) {
+        return _ref4.apply(this, arguments);
+      };
+    })());
+  }
+
+  changeRule(ruleName, ruleLevel) {
+    var _this4 = this;
+
+    return new Promise((() => {
+      var _ref5 = _asyncToGenerator(function* (resolve, reject) {
+        try {
+          yield (0, _updateRC2.default)(_this4.state.directory, function (rc) {
+            rc.rules[ruleName] = ruleLevel;
+          });
+          _this4.setState({ rules: _extends({}, _this4.state.rules, {
+              [ruleName]: ruleLevel
+            }) }, resolve);
+        } catch (error) {
+          reject(error);
+        }
+      });
+
+      return function (_x7, _x8) {
+        return _ref5.apply(this, arguments);
+      };
+    })());
+  }
+
+  removeRule(ruleName) {
+    var _this5 = this;
+
+    return new Promise((() => {
+      var _ref6 = _asyncToGenerator(function* (resolve, reject) {
+        try {
+          yield (0, _updateRC2.default)(_this5.state.directory, function (rc) {
+            delete rc.rules[ruleName];
+          });
+          _this5.setState({ rules: (0, _omit2.default)(_this5.state.rules, [ruleName]) }, resolve);
+        } catch (error) {
+          reject(error);
+        }
+      });
+
+      return function (_x9, _x10) {
+        return _ref6.apply(this, arguments);
+      };
+    })());
+  }
+
   render() {
     return _react2.default.createElement(
       _reactorsGrid.Stack,
@@ -168,13 +238,15 @@ class App extends _react.Component {
         { style: styles.main },
         !this.state.availableRules.length && _react2.default.createElement(
           _reactors.Text,
-          null,
+          { style: styles.fetching },
           'Fetching rules'
         ),
-        this.state.availableRules.length && (0, _underscoreSwitch2.default)(this.state.view, {
+        this.state.availableRules.length > 0 && (0, _underscoreSwitch2.default)(this.state.view, {
           rules: _react2.default.createElement(_Rules2.default, {
             app: this.state,
-            setAppState: partial => this.setState(partial)
+            addRule: this.addRule.bind(this),
+            changeRule: this.changeRule.bind(this),
+            removeRule: this.removeRule.bind(this)
           }),
 
           plugins: _react2.default.createElement(_Plugins2.default, { app: this.state }),
@@ -204,5 +276,12 @@ const styles = new _reactors.StyleSheet({
   main: {
     flexGrow: 2,
     overflow: 'auto'
+  },
+  fetching: {
+    height: _reactors.Dimensions.get('window').height - 160,
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center'
   }
 });

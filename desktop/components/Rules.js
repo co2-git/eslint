@@ -26,7 +26,24 @@ var _includes2 = _interopRequireDefault(_includes);
 
 var _reactorsForm = require('reactors-form');
 
+var _underscoreSwitch = require('underscore-switch');
+
+var _underscoreSwitch2 = _interopRequireDefault(_underscoreSwitch);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
+
+function findColor(rule, level) {
+  if (typeof rule === 'number') {
+    return (0, _underscoreSwitch2.default)(rule.toString(), {
+      [0]: level === 0 ? 'green' : 'gray',
+      [1]: level === 1 ? 'orange' : 'gray',
+      [2]: level === 2 ? 'red' : 'gray'
+    });
+  }
+  return 'gray';
+}
 
 class Rules extends _react.Component {
   constructor(...args) {
@@ -36,10 +53,13 @@ class Rules extends _react.Component {
   }
 
   render() {
+    var _this = this;
+
     const query = this.state.query;
     var _props$app = this.props.app;
     const availableRules = _props$app.availableRules;
     const rules = _props$app.rules;
+    // console.log({availableRules});
 
     return _react2.default.createElement(
       _reactorsGrid.Stack,
@@ -72,25 +92,30 @@ class Rules extends _react.Component {
               padding: 10,
               borderBottom: '1px solid #ccc',
               flexShrink: 0,
-              opacity: (0, _find2.default)(rules, { name: availableRule.name }) ? 1 : 0.25
+              opacity: availableRule.name in rules ? 1 : 0.25
             }
           },
           _react2.default.createElement(
             _reactorsGrid.Stack,
-            {
-              style: {
-                padding: 10
-              }
-            },
-            _react2.default.createElement(_reactorsIcons2.default, { name: 'check' })
+            { style: { padding: 10 } },
+            _react2.default.createElement(_reactorsIcons2.default, {
+              name: 'check',
+              onPress: _asyncToGenerator(function* () {
+                try {
+                  if (availableRule.name in rules) {
+                    yield _this.props.removeRule(availableRule.name);
+                  } else {
+                    yield _this.props.addRule(availableRule);
+                  }
+                } catch (error) {
+                  console.log(error.stack);
+                }
+              })
+            })
           ),
           _react2.default.createElement(
             _reactorsGrid.Stack,
-            {
-              style: {
-                flexGrow: 2
-              }
-            },
+            { style: { flexGrow: 2 } },
             _react2.default.createElement(
               _reactors.Link,
               {
@@ -111,36 +136,34 @@ class Rules extends _react.Component {
               _react2.default.createElement(
                 _reactors.Text,
                 {
-                  style: {
-                    backgroundColor: 'green',
-                    flexGrow: 2,
-                    padding: 6,
-                    textAlign: 'center'
-                  }
+                  onPress: () => {
+                    this.props.changeRule(availableRule.name, 0);
+                  },
+                  style: [styles.button, {
+                    backgroundColor: findColor(rules[availableRule.name], 0)
+                  }]
                 },
-                'Ignore'
+                'Off'
               ),
               _react2.default.createElement(
                 _reactors.Text,
                 {
-                  style: {
-                    backgroundColor: 'orange',
-                    flexGrow: 2,
-                    padding: 6,
-                    textAlign: 'center'
-                  }
+                  onPress: () => {
+                    this.props.changeRule(availableRule.name, 1);
+                  },
+                  style: [styles.button, { backgroundColor: findColor(rules[availableRule.name], 1) }]
                 },
-                'Warning'
+                'Warn'
               ),
               _react2.default.createElement(
                 _reactors.Text,
                 {
-                  style: {
-                    backgroundColor: 'red',
-                    flexGrow: 2,
-                    padding: 6,
-                    textAlign: 'center'
-                  }
+                  onPress: () => {
+                    this.props.changeRule(availableRule.name, 2);
+                  },
+                  style: [styles.button, {
+                    backgroundColor: findColor(rules[availableRule.name], 2)
+                  }]
                 },
                 'Error'
               )
@@ -163,5 +186,18 @@ const styles = new _reactors.StyleSheet({
     padding: 6,
     fontSize: 18,
     flexGrow: 2
+  },
+  rule: {
+    margin: 2,
+    padding: 10,
+    borderBottom: '1px solid #ccc',
+    flexShrink: 0
+  },
+  button: {
+    flexGrow: 2,
+    padding: 6,
+    textAlign: 'center',
+    color: 'white',
+    cursor: 'pointer'
   }
 });

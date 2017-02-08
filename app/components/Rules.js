@@ -5,8 +5,20 @@ import Icon from 'reactors-icons';
 import find from 'lodash/find';
 import includes from 'lodash/includes';
 import {TextInput} from 'reactors-form';
+import _switch from 'underscore-switch';
 
 type $props = {};
+
+function findColor(rule, level) {
+  if (typeof rule === 'number') {
+    return _switch(rule.toString(), {
+      [0]: level === 0 ? 'green' : 'gray',
+      [1]: level === 1 ? 'orange' : 'gray',
+      [2]: level === 2 ? 'red' : 'gray',
+    });
+  }
+  return 'gray';
+}
 
 export default class Rules extends Component {
   state = {query: ''};
@@ -14,6 +26,7 @@ export default class Rules extends Component {
   render() {
     const {query} = this.state;
     const {availableRules, rules} = this.props.app;
+    // console.log({availableRules});
     return (
       <Stack style={styles.container}>
         <Row>
@@ -27,7 +40,7 @@ export default class Rules extends Component {
         <Stack style={styles.list}>
           {
             availableRules
-            .filter(availableRule => {
+            .filter((availableRule) => {
               if (query) {
                 return includes(availableRule.name, query);
               } else {
@@ -42,23 +55,27 @@ export default class Rules extends Component {
                   padding: 10,
                   borderBottom: '1px solid #ccc',
                   flexShrink: 0,
-                  opacity:
-                    find(rules, {name: availableRule.name}) ? 1 : 0.25,
+                  opacity: (availableRule.name in rules) ? 1 : 0.25,
                 }}
                 >
-                <Stack
-                  style={{
-                    padding: 10,
-                  }}
-                  >
-                  <Icon name="check" />
+                <Stack style={{padding: 10}}>
+                  <Icon
+                    name="check"
+                    onPress={async () => {
+                      try {
+                        if ((availableRule.name in rules)) {
+                          await this.props.removeRule(availableRule.name);
+                        } else {
+                          await this.props.addRule(availableRule);
+                        }
+                      } catch (error) {
+                        console.log(error.stack);
+                      }
+                    }}
+                    />
                 </Stack>
 
-                <Stack
-                  style={{
-                    flexGrow: 2,
-                  }}
-                  >
+                <Stack style={{flexGrow: 2}}>
                   <Link
                     href={`http://eslint.org/docs/rules/${availableRule.name}`}
                     target="_blank"
@@ -71,34 +88,47 @@ export default class Rules extends Component {
 
                   <Row>
                     <Text
-                      style={{
-                        backgroundColor: 'green',
-                        flexGrow: 2,
-                        padding: 6,
-                        textAlign: 'center',
+                      onPress={() => {
+                        this.props.changeRule(availableRule.name, 0);
                       }}
+                      style={[
+                        styles.button,
+                        {
+                          backgroundColor: findColor(
+                            rules[availableRule.name],
+                            0,
+                          ),
+                        },
+                      ]}
                       >
-                      Ignore
+                      Off
                     </Text>
 
                     <Text
-                      style={{
-                        backgroundColor: 'orange',
-                        flexGrow: 2,
-                        padding: 6,
-                        textAlign: 'center',
+                      onPress={() => {
+                        this.props.changeRule(availableRule.name, 1);
                       }}
+                      style={[
+                        styles.button,
+                        {backgroundColor: findColor(rules[availableRule.name], 1)},
+                      ]}
                       >
-                      Warning
+                      Warn
                     </Text>
 
                     <Text
-                      style={{
-                        backgroundColor: 'red',
-                        flexGrow: 2,
-                        padding: 6,
-                        textAlign: 'center',
+                      onPress={() => {
+                        this.props.changeRule(availableRule.name, 2);
                       }}
+                      style={[
+                        styles.button,
+                        {
+                          backgroundColor: findColor(
+                            rules[availableRule.name],
+                            2,
+                          ),
+                        },
+                      ]}
                       >
                       Error
                     </Text>
@@ -124,5 +154,18 @@ const styles = new StyleSheet({
     padding: 6,
     fontSize: 18,
     flexGrow: 2,
+  },
+  rule: {
+    margin: 2,
+    padding: 10,
+    borderBottom: '1px solid #ccc',
+    flexShrink: 0,
+  },
+  button: {
+    flexGrow: 2,
+    padding: 6,
+    textAlign: 'center',
+    color: 'white',
+    cursor: 'pointer',
   },
 });

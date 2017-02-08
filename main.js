@@ -17,7 +17,7 @@ function createWindow() {
 
   // Open the DevTools.
   if (process.env.NODE_ENV !== 'production') {
-    win.webContents.openDevTools();
+    // win.webContents.openDevTools();
   }
 
   // Emitted when the window is closed.

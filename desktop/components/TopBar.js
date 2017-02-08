@@ -43,7 +43,7 @@ function TopBar(props) {
         'v',
         _package.version
       ),
-      props.app.availableRules.length && _react2.default.createElement(_reactorsFileDialog2.default, {
+      props.app.availableRules.length > 1 && _react2.default.createElement(_reactorsFileDialog2.default, {
         color: 'white',
         directory: props.app.directory,
         onChange: directory => props.setAppState({ directory })

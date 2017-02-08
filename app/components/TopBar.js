@@ -18,7 +18,7 @@ export default function TopBar(props: $props) {
         <Text style={[styles.title, {fontWeight: 'bold', paddingRight: 5}]}>eslint</Text>
         <Text style={styles.title}>v{version}</Text>
         {
-          props.app.availableRules.length &&
+          props.app.availableRules.length > 1 &&
           <FileDialog
             color="white"
             directory={props.app.directory}

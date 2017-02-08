@@ -10,5 +10,16 @@
     }
   },
   "plugins": [],
-  "rules": {}
+  "rules": {
+    "accessor-pairs": 0,
+    "array-bracket-spacing": 2,
+    "arrow-body-style": 0,
+    "block-spacing": 0,
+    "arrow-parens": 0,
+    "arrow-spacing": 1,
+    "no-unused-expressions": 1,
+    "no-unused-labels": 1,
+    "no-unused-vars": 1,
+    "eqeqeq": 0
+  }
 }

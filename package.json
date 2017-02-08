@@ -1,6 +1,6 @@
 {
   "name": "ESLint",
-  "version": "0.2.0",
+  "version": "0.3.2",
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
@@ -19,7 +19,7 @@
     "react-dom": "^15.4.1",
     "react-native": "0.39.2",
     "reactors": "^1.4.12",
-    "reactors-file-dialog": "^1.1.1",
+    "reactors-file-dialog": "^1.2.0",
     "reactors-form": "^0.3.4",
     "reactors-grid": "^1.6.1",
     "reactors-icons": "^1.0.2",

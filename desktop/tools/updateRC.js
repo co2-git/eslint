@@ -23,7 +23,6 @@ function updateRC(directory, update) {
   return new Promise((() => {
     var _ref = _asyncToGenerator(function* (resolve, reject) {
       try {
-        console.log({ updateRC: directory });
         const rc = yield (0, _readRC2.default)(directory);
         update(rc);
         const write = (0, _fs.createWriteStream)(_path2.default.join(directory, '.eslintrc.json'));

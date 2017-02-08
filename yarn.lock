@@ -3851,9 +3851,9 @@ react@^15.4.1:
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
 
-reactors-file-dialog@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/reactors-file-dialog/-/reactors-file-dialog-1.1.1.tgz#ea5d0634553dfcefc762972b6050ec7aa8c4d434"
+reactors-file-dialog@^1.2.0:
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/reactors-file-dialog/-/reactors-file-dialog-1.2.0.tgz#27715f6f6da5210f8b40cd148e05ccbd5bf38c56"
   dependencies:
     babel-preset-react "^6.16.0"
     reactors-grid "^1.5.0"
